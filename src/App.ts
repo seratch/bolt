@@ -244,8 +244,9 @@ export default class App {
       tls: clientTls,
       slackApiUrl: clientOptions !== undefined ? clientOptions.slackApiUrl : undefined,
     };
-    // the public WebClient instance (app.client) - this one doesn't have a token
-    this.client = new WebClient(undefined, this.clientOptions);
+    // The public WebClient instance (app.client)
+    // Since v3.4, the token passed in this constructor is set to app.client too
+    this.client = new WebClient(token, this.clientOptions);
 
     this.axios = axios.create({
       httpAgent: agent,
