@@ -3,8 +3,7 @@
 import { createServer, Server, ServerOptions } from 'http';
 import { createServer as createHttpsServer, Server as HTTPSServer, ServerOptions as HTTPSServerOptions } from 'https';
 import { ListenOptions } from 'net';
-import express, { Request, Response, Application, RequestHandler, Router } from 'express';
-import * as core from 'express-serve-static-core';
+import express, { Request, Response, Application, RequestHandler, Router, IRouter } from 'express';
 import rawBody from 'raw-body';
 import querystring from 'querystring';
 import crypto from 'crypto';
@@ -34,7 +33,7 @@ export interface ExpressReceiverOptions {
   installationStore?: InstallProviderOptions['installationStore']; // default MemoryInstallationStore
   scopes?: InstallURLOptions['scopes'];
   installerOptions?: InstallerOptions;
-  router?: core.Router;
+  router?: IRouter;
 }
 
 // Additional Installer Options
@@ -65,7 +64,7 @@ export default class ExpressReceiver implements Receiver {
 
   private processBeforeResponse: boolean;
 
-  public router: Router;
+  public router: IRouter;
 
   public installer: InstallProvider | undefined = undefined;
 
@@ -232,6 +231,7 @@ export default class ExpressReceiver implements Receiver {
     serverOptions: ServerOptions | HTTPSServerOptions = {},
   ): Promise<Server | HTTPSServer | void> {
     if (!this.app) {
+      this.logger.debug('As the Express app instance is not managed by this receiver, #start() method does nothing.');
       return Promise.resolve();
     }
 
@@ -291,6 +291,7 @@ export default class ExpressReceiver implements Receiver {
   // generic types
   public stop(): Promise<void> {
     if (!this.app) {
+      this.logger.debug('As the Express app instance is not managed by this receiver, #stop() method does nothing.');
       return Promise.resolve();
     }
 
